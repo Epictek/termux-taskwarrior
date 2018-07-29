@@ -1,0 +1,5 @@
+duedate=due: `termux-dialog date -t "Task Due" -d "YYY-MM-dd" | jq -r .text`
+
+description=`termux-dialog text -t "Task Description" | jq -r .text`
+
+task add $description $due 
