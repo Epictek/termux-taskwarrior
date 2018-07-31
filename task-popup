@@ -1,9 +1,8 @@
-#!/bin/bash
+#!/data/data/com.termux/files/usr/bin/sh
 
 date_format(){
   date -d "$(echo $1 | sed -r 's/(.*)T(..)(..)(..)/\1 \2:\3:\4/')"
 }
-
 
 
 task status:pending or status:active export | jq -c '.[]' | while read i; do
@@ -20,11 +19,17 @@ task status:pending or status:active export | jq -c '.[]' | while read i; do
 	if [ -n "${task[project]}" ] ; then
 	  content+="Project: ${task[project]}"
 	fi
+
 	if [ -n "${task[due]}" ] ; then
-	 echo "derp" 
-	  #content+="Due:" $(date_format ${task[due]})
+	  content+="Due: $(date_format ${task[due]})"
 	fi
 
-	termux-notification --title "${task[description]}" --id "${task[uuid]}" --button1 "Done" --button1-action="termux-notification-remove ${task[uuid]} && task done ${task[uuid]}" --button2="modify" --button2-action=""--content "$content"
+
+	notification="--title '${task[description]}' --id '${task[uuid]}'"
+	notification+="--button1 'Done' --button1-action='termux-notification-remove ${task[uuid]} && task done ${task[uuid]}'"
+ 	notification+="--button2='modify' --button2-action='modify-task' --content '$content'"
+
+
+	termux-notification $notification
 done
 
