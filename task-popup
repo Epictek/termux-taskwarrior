@@ -1,7 +1,7 @@
-#!/data/data/com.termux/files/usr/bin/sh
+#!/data/data/com.termux/files/usr/bin/bash
 
 date_format(){
-  date -d "$(echo $1 | sed -r 's/(.*)T(..)(..)(..)/\1 \2:\3:\4/')"
+  date -d "$(echo $1 | sed -r 's/(....)(..)(..)T(..)(..)(..)Z/\1-\2-\3 \4:\5:\6/')"
 }
 
 
@@ -11,8 +11,6 @@ task status:pending or status:active export | jq -c '.[]' | while read i; do
 	while IFS== read -r key value; do
 	  task["$key"]="$value"
 	done < <(echo "$i" | jq -r 'to_entries  | .[] | .key + "=" + (.value|tostring)') 
-
-	typeset -p task
 
 
 	content="Status ${task[status]} "
@@ -25,11 +23,12 @@ task status:pending or status:active export | jq -c '.[]' | while read i; do
 	fi
 
 
-	notification="--title '${task[description]}' --id '${task[uuid]}'"
-	notification+="--button1 'Done' --button1-action='termux-notification-remove ${task[uuid]} && task done ${task[uuid]}'"
- 	notification+="--button2='modify' --button2-action='modify-task' --content '$content'"
+	notification="termux-notification --title \"${task[description]}\" --id \"${task[uuid]}\""
+ 	notification="$notification --button1 \"Done\" --button1-action \"termux-notification-remove ${task[uuid]} && task done ${task[uuid]}\""
+ 	notification="$notification --button2 \"Modify\" --button2-action \"modify-task\" --content \"$content\""
 
+	echo $notification
 
-	termux-notification $notification
+	eval $notification
 done
 

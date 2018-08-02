@@ -1,6 +1,16 @@
-#!/data/data/com.termux/files/usr/bin/sh
+#!/data/data/com.termux/files/usr/bin/bash
 
-duedate="due:$(termux-dialog date -t "Task Due" -d "YYY-MM-dd" | jq -r .text)"
-description=`termux-dialog text -t "Task Description" | jq -r .text`
+description=$(termux-dialog text -t "Task Description" | jq -r .text)
+date=$(./termux-dialog date -t "Task Due" -d "YYY-MM-dd")
+
+duedate=""
+echo $date
+
+if [ `echo $date | jq -r .code` -gt -2 ] ; then
+	duedate="due:$(echo $date | jq -r .text)"
+     echo $duedate
+fi
+
+echo $duedate
 
 task add $description $duedate 
