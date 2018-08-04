@@ -1,10 +1,21 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
+if [ $1 -n ]; then
+
+	 election=termux-dialog checkbox -v "$(task status:pending export | jq -r '.[] | "\(.id) \(.description),"')"
+	 if [ $(echo $selection | jq -r '.code') -lt -1]; then
+	exit 1
+	fi
+	selected_tasks=echo $selection | jq -r '.text .[]'
+else
+selected_task=$1
+fi
+
 typeset -A taskArray
 
 while IFS== read -r key value; do
     taskArray["$key"]="$value"
-done < <(task $1 export | jq -r '.[] | to_entries | .[] | .key + "=" + (.value|tostring)')
+done < <(task $selected_task export | jq -r '.[] | to_entries | .[] | .key + "=" + (.value|tostring)')
 
 newDescription=$(termux-dialog text -i "${taskArray[description]}" -t "Modify task" | jq '.text')
 

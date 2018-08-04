@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 date_format(){
-  date -d "$(echo $1 | sed -r 's/(....)(..)(..)T(..)(..)(..)Z/\1-\2-\3 \4:\5:\6/')"
+  date -I -d "$(echo $1 | sed -r 's/(....)(..)(..)T(..)(..)(..)Z/\1-\2-\3 \4:\5:\6/')"
 }
 
 
@@ -15,7 +15,7 @@ task status:pending or status:active export | jq -c '.[]' | while read i; do
 
 	content="Status ${task[status]} "
 	if [ -n "${task[project]}" ] ; then
-	  content+="Project: ${task[project]}"
+	  content+="Project: ${task[project]}/n \n"
 	fi
 
 	if [ -n "${task[due]}" ] ; then
