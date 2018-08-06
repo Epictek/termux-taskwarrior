@@ -1,14 +1,13 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 if [ $1 -n ]; then
-
-	 election=termux-dialog checkbox -v "$(task status:pending export | jq -r '.[] | "\(.id) \(.description),"')"
-	 if [ $(echo $selection | jq -r '.code') -lt -1]; then
+	selection=$(termux-dialog checkbox -v "$(task status:pending export | jq -r '.[] | "\(.id) \(.description),"')")
+    if [ $(echo $selection | jq -r '.code') -lt -1]; then
 	exit 1
-	fi
-	selected_tasks=echo $selection | jq -r '.text .[]'
+    fi
+    selected_tasks=$(echo $selection | jq -r '.text | @csv')
 else
-selected_task=$1
+    selected_task=$1
 fi
 
 typeset -A taskArray
