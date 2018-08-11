@@ -27,8 +27,6 @@ task status:pending or status:active export | jq -c '.[]' | while read i; do
  	notification="$notification --button1 \"Done\" --button1-action \"termux-notification-remove ${task[uuid]} && task done ${task[uuid]}\""
  	notification="$notification --button2 \"Modify\" --button2-action \"modify-task\" --content \"$content\""
 
-	echo $notification
-
-	eval $notification
+	eval $notification &
 done
 

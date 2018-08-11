@@ -2,20 +2,20 @@
 
 if [ $1 -n ]; then
 	selection=$(termux-dialog checkbox -v "$(task status:pending export | jq -r '.[] | "\(.id) \(.description),"')")
-    if [ $(echo $selection | jq -r '.code') -lt -1]; then
+    if  [ `echo $selection | jq -r '.code'` -lt -1 ]; then
 	exit 1
     fi
-    selected_tasks=$(echo $selection | jq -r '.text | @csv')
+    selected_tasks=$(echo $selection | jq -r '.values | @csv')
 else
-    selected_task=$1
+    selected_tasks=$1
 fi
+
+echo $selected_tasks
 
 typeset -A taskArray
 
 while IFS== read -r key value; do
     taskArray["$key"]="$value"
-done < <(task $selected_task export | jq -r '.[] | to_entries | .[] | .key + "=" + (.value|tostring)')
+done < <(task $selected_tasks export | jq -r '.[] | to_entries | .[] | .key + "=" + (.value|tostring)')
 
-newDescription=$(termux-dialog text -i "${taskArray[description]}" -t "Modify task" | jq '.text')
-
-task ${taskArray[uuid]} modify $newDescription 
+task $selected_tasks modify $(./build-task) 
