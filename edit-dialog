@@ -1,0 +1,1 @@
+./termux-dialog sheet -"Edit task" -v "Description","Due Date","Due Time","Schedule","Repeat"
